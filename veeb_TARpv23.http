@@ -1,0 +1,6 @@
+@veeb_TARpv23_HostAddress = http://localhost:5147
+
+GET {{veeb_TARpv23_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
