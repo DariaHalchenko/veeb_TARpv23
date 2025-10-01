@@ -28,5 +28,44 @@ namespace veeb_TARpv23.Controllers
             // Tagastab uuendatud toote
             return _toode;
         }
+
+        // Ülesanne 1
+        // GET: api/toode/aktiivsust - Marsruut
+        [HttpGet("aktiivsust")]
+        // lülitab aktiivsusseisundit 
+        public Toode Aktiivsus()
+        {
+            // Inverteerime IsActive objekti omaduste hetkeseisu _toode 
+            // Kui oli true - saab false, kui oli false - saab true
+            _toode.IsActive = !_toode.IsActive;
+            return _toode;
+        }
+
+        // Ülesanne 2
+        // GET: toode/nime-muutmine/{uusNimi}
+        [HttpGet("nime-muutmine/{uusNimi}")]
+        // muudab toote nime
+        public Toode NimeMuutmine(string uusNimi)
+        {
+            // Omandame uue nime 
+            _toode.Name = uusNimi;
+            return _toode;
+        }
+
+        // Ülesanne 3
+        // GET: toode/muuda-hinda/{jarjekorranumber}
+        [HttpGet("muuda-hinda/{jarjekorranumber}")]
+        // toote hinnamuutused järjekorranumbri alusel
+        public Toode MuudaHind(int jarjekorranumber)
+        {
+            // Kontrolli, et jarjekorranumber oleks positiivne
+            if (jarjekorranumber <= 0)
+            {
+                throw new ArgumentException("Järjekorra number peab ületama nulli");
+            }
+            // Korrutame toote hetkehinna jarjekorranumbriga
+            _toode.Price *= jarjekorranumber;
+            return _toode;
+        }
     }
 }

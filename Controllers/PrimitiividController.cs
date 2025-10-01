@@ -49,5 +49,40 @@ namespace veeb_TARpv23.Controllers
                 Console.WriteLine("See on logi nr " + i);
             }
         }
+
+        // Ülesanne 1
+        [HttpGet("random-number/{nr1}/{nr2}")]
+        public int RandomNumber(int nr1, int nr2)
+        {
+            if (nr1 > nr2)
+            {
+                int temp = nr1;
+                nr1 = nr2;
+                nr2 = temp;
+            }
+            // Loome uue objekti Random juhusliku arvu genereerimiseks
+            Random random = new Random();
+            // Genereerime juhusliku arvu vahemikus (nr1, nr2)
+            return random.Next(nr1, nr2);
+        }
+
+        // Ülesanne 2
+        [HttpGet("age/{birthdayYears}")]
+        public string GetAge(int birthdayYears)
+        {
+            // Saame praeguse kuupäeva ja kellaaja
+            DateTime currentdate = DateTime.Now;
+            // Arvutame ligikaudse vanuse
+            int age = currentdate.Year - birthdayYears;
+            // Loome kuupäeva objekti käesoleva aasta sünnipäevaks
+            DateTime birthdayThisYear = new DateTime(currentdate.Year, 1, 1);
+            // Kui praegune kuupäev on varasem kui sünnipäev sel aastal, vähendame vanust 1 aasta võrra.
+            if (currentdate < birthdayThisYear)
+            {
+                age--;
+            }
+            // Tagastame rea vanusega
+            return $"Oled {age} aastat vana";
+        }
     }
 }
