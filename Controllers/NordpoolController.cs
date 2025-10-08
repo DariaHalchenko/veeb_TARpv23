@@ -16,53 +16,47 @@ namespace veeb_TARpv23.Controllers
         {
             _httpClient = httpClient;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetNordpoolPrices()
-        {
-            // Saadame asünkroonselt GET-päringu välisele Nord Pooli API-le
-            var response = await _httpClient.GetAsync("https://dashboard.elering.ee/api/nps/price");
-            // Saame vastuse sisu stringina
-            var responseBody = await response.Content.ReadAsStringAsync();
-            // Tagastame saadud andmed JSON-vormingus
-            return Content(responseBody, "application/json");
-        }
-
         [HttpGet("{country}/{start}/{end}")]
         public async Task<IActionResult> GetNordPoolPrices(
-            string country,
-            string start,
-            string end)
-            {
+            string country, // riigi kood (ee, lv, lt, fi)
+            string start, // perioodi alguskuupäev
+            string end)  // perioodi lõppkuupäev
+        {
+            // Teostame HTTP-päringu Nord Pooli API-le
             var response = await _httpClient.GetAsync(
                 $"https://dashboard.elering.ee/api/nps/price?start={start}&end={end}");
+            // Loeme vastuse rea kujul
             var responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
 
             var jsonDoc = JsonDocument.Parse(responseBody);
+            // Võtame omaduse „data“ juur-JSONist välja
             var dataProperty = jsonDoc.RootElement.GetProperty("data");
 
             string prices;
 
+            // Sõltuvalt riigist tagastame vastava JSON-osa
             switch (country)
             {
+                // Saame andmed Eesti kohta
                 case "ee":
                     prices = dataProperty.GetProperty("ee").ToString();
                     Console.WriteLine(responseBody);
 
                     return Content(prices, "application/json");
-
+                // Saame andmed Läti kohta
                 case "lv":
                     prices = dataProperty.GetProperty("lv").ToString();
                     return Content(prices, "application/json");
-
+                // Saame andmed Leedu kohta
                 case "lt":
                     prices = dataProperty.GetProperty("lt").ToString();
                     return Content(prices, "application/json");
-
+                // Saame andmed Soome kohta
                 case "fi":
                     prices = dataProperty.GetProperty("fi").ToString();
                     return Content(prices, "application/json");
-
+                // Kui edastatud riigi kood on vale, tagastame vea 400.
                 default:
                     return BadRequest("Invalid country code.");
             }
