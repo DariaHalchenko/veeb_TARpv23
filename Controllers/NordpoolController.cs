@@ -16,6 +16,16 @@ namespace veeb_TARpv23.Controllers
         {
             _httpClient = httpClient;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetNordpoolPrices()
+        {
+            // Saadame asünkroonselt GET-päringu välisele Nord Pooli API-le
+            var response = await _httpClient.GetAsync("https://dashboard.elering.ee/api/nps/price");
+            // Saame vastuse sisu stringina
+            var responseBody = await response.Content.ReadAsStringAsync();
+            // Tagastame saadud andmed JSON-vormingus
+            return Content(responseBody, "application/json");
+        }
 
         [HttpGet("{country}/{start}/{end}")]
         public async Task<IActionResult> GetNordPoolPrices(
